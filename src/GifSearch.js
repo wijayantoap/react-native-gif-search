@@ -297,7 +297,7 @@ class GifSearch extends PureComponent {
         ...this.props.tenorApiProps,
       });
     } else if (endpoint == endpoints.SEARCH) {
-      return Requests.fetch("GET", TENOR_BASE_URL + "search_suggestions", {
+      return Requests.fetch("GET", TENOR_BASE_URL + "search", {
         key: this.tenorApiKey,
         q: this.state.search_term,
         limit: limit,
@@ -610,12 +610,13 @@ class GifSearch extends PureComponent {
             var gif_better_quality = null;
 
             if (item.provider == providers.TENOR) {
-              gif_preview = item.media[0][this.tenorGifPreview].url;
-              gif_better_quality = item.media[0][this.tenorGifSelected].url;
-              if (parseInt(item.media[0][this.tenorGifSelected].dims[1])) {
+              gif_preview = item.media_formats[this.tenorGifPreview].url;
+              gif_better_quality =
+                item.media_formats[this.tenorGifSelected].url;
+              if (parseInt(item.media_formats[this.tenorGifSelected].dims[1])) {
                 aspect_ratio =
-                  parseInt(item.media[0][this.tenorGifSelected].dims[0]) /
-                  parseInt(item.media[0][this.tenorGifSelected].dims[1]);
+                  parseInt(item.media_formats[this.tenorGifSelected].dims[0]) /
+                  parseInt(item.media_formats[this.tenorGifSelected].dims[1]);
               }
             } else {
               gif_preview = item.images[this.giphyGifPreview].url;
@@ -637,11 +638,6 @@ class GifSearch extends PureComponent {
                 onLongPress={() => {
                   this.props.onGifLongPress(gif_better_quality, item);
                   Keyboard.dismiss();
-                }}
-                onLongPress={() => {
-                  if (this.props.onGifLongPress) {
-                    this.props.onGifLongPress(gif_better_quality, item);
-                  }
                 }}
               >
                 <Image
